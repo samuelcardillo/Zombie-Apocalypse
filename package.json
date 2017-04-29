@@ -1,0 +1,25 @@
+{
+  "name": "teamzombie",
+  "version": "1.0.0",
+  "description": "Kill those zombies!!!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelcardillo/teamzombie.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samuelcardillo/teamzombie/issues"
+  },
+  "homepage": "https://github.com/samuelcardillo/teamzombie#readme",
+  "dependencies": {
+    "http-server": "^0.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
