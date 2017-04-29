@@ -10,7 +10,7 @@ kd 0.184314 0.168627 0.184314
 ks 0.494118 0.494118 0.494118
 ke 0 0 0
 ns 96.0784
-map_kd D:\Programma's\fragMOTION 1.1.1\Models\zomby_light.png
+map_kd zomby_light.png
 newmtl Material1
 illum 2
 d 1
@@ -19,4 +19,4 @@ kd 0.639216 0.639216 0.639216
 ks 0.494118 0.494118 0.494118
 ke 0 0 0
 ns 96.0784
-map_kd D:\Programma's\fragMOTION 1.1.1\Models\ribs_light.png
+map_kd ribs_light.png
