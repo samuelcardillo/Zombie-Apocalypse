@@ -7,6 +7,9 @@
     <!-- Importing super-hands !-->
     <script src="/js/super-hands.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
+    <script>
+        
+    </script>
 </head>
 <body>
   <a-scene>
@@ -23,6 +26,10 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+        
+      <!-- Gun asset !-->
+      <a-asset-item id="gun-obj" src="assets/models/gun/Handgun_obj.obj"></a-asset-item>
+      <a-asset-item id="gun-mtl" src="assets/models/gun/Handgun_obj.mtl"></a-asset-item>
     </a-assets>
 
     <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
@@ -36,6 +43,9 @@
 
     <!-- Zombie !-->
     <a-obj-model position="0 5 -5" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
+      
+     <!-- Gun !-->
+      <a-obj-model grabbable position="0 2 -1" src="#gun-obj" mtl="#gun-mtl"></a-obj-model>
 
     <a-camera position="0 3 0">
       <a-cursor></a-cursor>
