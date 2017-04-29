@@ -51,11 +51,10 @@
     <a-obj-model position="0 0 -5" scale="1.2 1.6 1.2" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
 
     <a-camera position="0 3 -1.5">
-      <a-cursor></a-cursor>
     </a-camera>
       
-    <a-entity position="0 3 0" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 0"  super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+    <a-entity position="0 3 -1.5" 	super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity position="0 3 -1.5"  super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
 
     <a-box hoverable position="0 5 -1" clickable grabbable stretchable drag-droppable color="red"></a-box>
   </a-scene>
