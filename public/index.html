@@ -5,7 +5,7 @@
     <script src="aframe.min.js"></script>
     
     <!-- Importing super-hands !-->
-    <script src="/js/super-hands.min.js"></script>
+    <script src="assets/scripts/super-hands.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
     <script>
         
@@ -14,9 +14,10 @@
 <body>
   <a-scene>
     <a-assets>
-      <img id="skybox" src="assets/sky.jpg">
-      <video id="video" src="https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/"
+      <!-- <img id="skybox" src="assets/sky.jpg"> -->
+      <video id="video" src="https://www.youtube.com/watch?v=z-VvdEvKmzw"
                autoplay loop crossorigin></video>
+      <img id="skybox" src="assets/sky.jpg">
       <!-- <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video> -->
 
       <!-- Pickup assets !-->
@@ -35,7 +36,8 @@
     <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
 
     <!-- <a-sky src="#skybox"></a-sky> -->
-    <a-videosphere src="#video" rotation="0 180 0"></a-videosphere>
+    <a-videosphere src="#video" rotation="0 0 0"></a-videosphere>
+    <a-sky src="#skybox"></a-sky>
     <a-box color="red" position="0 0 10"></a-box>
 
     <!-- Truck !-->
@@ -46,16 +48,16 @@
       
      <!-- Gun !-->
       <a-obj-model grabbable position="0 2 -1" src="#gun-obj" mtl="#gun-mtl"></a-obj-model>
+    <a-obj-model position="0 0 -5" scale="1.2 1.6 1.2" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
 
-    <a-camera position="0 3 0">
+    <a-camera position="0 3 -1.5">
       <a-cursor></a-cursor>
     </a-camera>
       
-    <a-entity hand-controls="left" super-hands sphere-collider="objects: a-box"></a-entity>
-    <a-entity hand-controls="right" super-hands sphere-collider="objects: a-box"></a-entity>
-    
-      <!-- A box for interaction !-->
-      <a-box hoverable clickable grabbable stretchable drag-droppable color="red"></a-box>
+    <a-entity position="0 3 0" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity position="0 3 0"  super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+
+    <a-box hoverable position="0 5 -1" clickable grabbable stretchable drag-droppable color="red"></a-box>
   </a-scene>
 
   <!-- Browserified source !-->
