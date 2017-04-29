@@ -1,13 +1,14 @@
 
 <html>
 <head>
+  <!-- Importing a-frame !-->
   <script src="aframe.min.js"></script>
 </head>
 <body>
   <a-scene>
     <a-assets>
       <img id="skybox" src="assets/sky.jpg">
-      <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video>
+      <!-- <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video> -->
     </a-assets>
 
     <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
@@ -20,12 +21,7 @@
     </a-camera>
   </a-scene>
 
-  <script type="text/javascript">
-    (function() {
-      document.querySelector("a-box").addEventListener("click", function(evt) {
-        document.querySelector("a-box").setAttribute("visible", false)
-      })
-    })();
-  </script>
+  <!-- Browserified source !-->
+  <script src="core/bundled.js"></script>
 </body>
 </html>
