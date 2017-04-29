@@ -5,17 +5,25 @@
 </head>
 <body>
   <a-scene>
+    <a-assets>
+      <img id="skybox" src="assets/sky.jpg">
+      <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video>
+    </a-assets>
+
+    <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
+
+    <a-sky src="#skybox"></a-sky>
+    <a-box color="red" position="0 0 10"></a-box>
+
     <a-camera>
       <a-cursor></a-cursor>
     </a-camera>
-
-    <a-box position="0 0 -10" color="red"></a-box>
   </a-scene>
 
   <script type="text/javascript">
     (function() {
       document.querySelector("a-box").addEventListener("click", function(evt) {
-        console.dir(evt);
+        document.querySelector("a-box").setAttribute("visible", false)
       })
     })();
   </script>
