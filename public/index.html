@@ -1,8 +1,12 @@
 
 <html>
 <head>
-  <!-- Importing a-frame !-->
-  <script src="aframe.min.js"></script>
+    <!-- Importing a-frame !-->
+    <script src="aframe.min.js"></script>
+    
+    <!-- Importing super-hands !-->
+    <script src="/js/super-hands.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
 </head>
 <body>
   <a-scene>
@@ -35,6 +39,12 @@
     <a-camera position="0 3 0">
       <a-cursor></a-cursor>
     </a-camera>
+      
+    <a-entity hand-controls="left" super-hands sphere-collider="objects: a-box"></a-entity>
+    <a-entity hand-controls="right" super-hands sphere-collider="objects: a-box"></a-entity>
+    
+      <!-- A box for interaction !-->
+      <a-box hoverable clickable grabbable stretchable drag-droppable color="red"></a-box>
   </a-scene>
 
   <!-- Browserified source !-->
