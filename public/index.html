@@ -14,14 +14,7 @@
 <body>
   <a-scene>
     <a-assets>
-      <!-- <img id="skybox" src="assets/sky.jpg"> -->
       <video id="video" src="assets/background.mp4" autoplay loop crossorigin></video>
-      <!-- <img id="skybox" src="assets/sky.jpg"> -->
-      <!-- <video id="video" src="https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/" autoplay loop crossorigin></video> -->
-      <!-- <video id="video" src="https://www.youtube.com/watch?v=z-VvdEvKmzw"
-               autoplay loop crossorigin></video> -->
-      <!-- <img id="skybox" src="assets/sky.jpg"> -->
-      <!-- <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video> -->
 
       <!-- Pickup assets !-->
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
@@ -30,35 +23,23 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
-        
-      <!-- Gun asset !-->
-      <a-asset-item id="gun-obj" src="assets/models/gun/Handgun_obj.obj"></a-asset-item>
-      <a-asset-item id="gun-mtl" src="assets/models/gun/Handgun_obj.mtl"></a-asset-item>
+
     </a-assets>
 
-    <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
-
-    <!-- <a-sky src="#skybox"></a-sky> -->
-    <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
-    <!-- <a-sky src="#skybox"></a-sky> -->
+    <a-videosphere src="#video"  rotation="0 90 0"></a-videosphere>
 
     <!-- Truck !-->
     <a-obj-model position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <!-- Zombie !-->
-    <a-obj-model position="0 5 -5" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
-      
-    <!-- Gun !-->
-    <a-obj-model position="0 2 -2" src="#gun-obj" mtl="#gun-mtl"></a-obj-model>
+    <a-obj-model position="0 0 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
 
-    <a-camera position="0 3 -1.5">
-    </a-camera>
+    <a-camera position="0 3 -1.5"></a-camera>
       
     <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 -1.5"  super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+    <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
 
-    <a-box hoverable position="0 5 -1" clickable grabbable stretchable drag-droppable color="red"></a-box>
-  </a-scene>
+   </a-scene>
 
   <!-- Browserified source !-->
   <script src="core/bundled.js"></script>
