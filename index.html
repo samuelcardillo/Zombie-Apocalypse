@@ -1,0 +1,23 @@
+
+<html>
+<head>
+  <script src="aframe.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <a-camera>
+      <a-cursor></a-cursor>
+    </a-camera>
+
+    <a-box position="0 0 -10" color="red"></a-box>
+  </a-scene>
+
+  <script type="text/javascript">
+    (function() {
+      document.querySelector("a-box").addEventListener("click", function(evt) {
+        console.dir(evt);
+      })
+    })();
+  </script>
+</body>
+</html>
