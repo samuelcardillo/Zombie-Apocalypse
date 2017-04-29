@@ -7,12 +7,11 @@
     <!-- Importing super-hands !-->
     <script src="assets/scripts/super-hands.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
-    <script>
-        
-    </script>
+    <script></script>
+    <script src="assets/scripts/aframe-physics-components.min.js"></script>
 </head>
 <body>
-  <a-scene>
+  <a-scene physics-world="gravity: 0 -3.8 0">
     <a-assets>
       <video id="video" src="assets/background.mp4" autoplay loop crossorigin></video>
 
@@ -27,17 +26,22 @@
     </a-assets>
 
     <a-videosphere src="#video"  rotation="0 90 0"></a-videosphere>
+    <a-entity id="ground"
+                geometry="primitive: box; depth: 50; height: 0.1; width: 30"
+                material="color: #2E3837"
+physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" opacity="0" visible="false"></a-entity>
 
     <!-- Truck !-->
     <a-obj-model position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <!-- Zombie !-->
-    <a-obj-model position="0 0 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
+    <a-obj-model physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+                 position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
 
-    <a-camera position="0 3 -1.5"></a-camera>
+    <a-camera position="0 3 0.5"></a-camera>
       
-    <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
 
    </a-scene>
 
