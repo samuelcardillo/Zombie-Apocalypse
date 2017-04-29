@@ -1,5 +1,5 @@
 (function() {
-  document.querySelector("a-box").addEventListener("click", function(evt) {
-    document.querySelector("a-box").setAttribute("visible", false)
+  document.querySelector("a-box").addEventListener("grabStartButtons", function(evt) {
+    console.log("gab");
   })
 })();
