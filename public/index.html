@@ -25,23 +25,27 @@
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
     </a-assets>
 
+     <!-- We add the controllers !-->
+    <a-entity position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+
     <!-- We define the environment !-->
-    <a-camera position="0 3 0.5"></a-camera>
+    <a-camera position="0 2 -1">
+    	<a-cursor></a-cursor>
+    </a-camera>
+
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
-    <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
+    <!-- <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity> -->
 
     <!-- Truck !-->
-    <a-box color="red" scale="2 2 2" physics-body="boundingBox: 2 2 2; mass: 5; velocity: 0" position=" 0 5 -2"></a-box>
+    <a-box grabbable color="red" physics-body="boundingBox: 2 2 2; mass: 0; velocity: 0" position=" 0 2 -2"></a-box>
     <a-obj-model physics-body="boundingBox: 3 3 12; mass: 0; velocity: 0" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <!-- Zombie !-->
     <a-obj-model physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0" position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
 
     
-    <!-- We add the controllers !-->
-    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
-
+   
    </a-scene>
 
   <!-- Browserified source !-->
