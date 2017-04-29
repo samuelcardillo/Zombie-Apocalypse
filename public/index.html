@@ -4,17 +4,17 @@
     <!-- Importing a-frame !-->
     <script src="aframe.min.js"></script>
     
-    <!-- Importing super-hands !-->
+    <!-- Importing other components !-->
     <script src="assets/scripts/super-hands.min.js"></script>
-    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.3.0/dist/aframe-extras.min.js"></script>
-    <script>
-        
-    </script>
+    <script src="assets/scripts/aframe-extras.min.js"></script>
+    <script src="assets/scripts/aframe-physics-components.min.js"></script>
 </head>
 <body>
-  <a-scene>
+  <a-scene physics-world="gravity: 0 -3.8 0">
+    <!-- We load the assets for the game !-->
     <a-assets>
-      <video id="video" src="assets/background.mp4" autoplay loop crossorigin></video>
+      <!-- Background video !-->
+      <video id="video" src="assets/background.mp4" autoplay loop muted crossorigin></video>
 
       <!-- Pickup assets !-->
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
@@ -23,21 +23,24 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
-
     </a-assets>
 
-    <a-videosphere src="#video"  rotation="0 90 0"></a-videosphere>
+    <!-- We define the environment !-->
+    <a-camera position="0 3 0.5"></a-camera>
+    <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
+    <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
     <!-- Truck !-->
-    <a-obj-model position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+    <a-box color="red" scale="2 2 2" physics-body="boundingBox: 2 2 2; mass: 5; velocity: 0" position=" 0 5 -2"></a-box>
+    <a-obj-model physics-body="boundingBox: 3 3 12; mass: 0; velocity: 0" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <!-- Zombie !-->
-    <a-obj-model position="0 0 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
+    <a-obj-model physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0" position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
 
-    <a-camera position="0 3 -1.5"></a-camera>
-      
-    <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 -1.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+    
+    <!-- We add the controllers !-->
+    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
 
     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies.">
       </a-entity>
