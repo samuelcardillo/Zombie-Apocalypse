@@ -9,19 +9,30 @@
     <a-assets>
       <img id="skybox" src="assets/sky.jpg">
       <!-- <video id="video" src="assets/video.mp4" autoplay loop crossorigin></video> -->
+
+      <!-- Pickup assets !-->
+      <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
+      <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
+
+      <!-- Zombie asset !-->
+      <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
+      <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
     </a-assets>
 
     <!-- <a-videosphere src="#video" rotation="0 180 0"></a-videosphere> -->
 
     <a-sky src="#skybox"></a-sky>
     <a-box color="red" position="0 0 10"></a-box>
-      
-    <a-camera>
+
+    <!-- Truck !-->
+    <a-obj-model position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+
+    <!-- Zombie !-->
+    <a-obj-model position="0 5 -5" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
+
+    <a-camera position="0 3 0">
       <a-cursor></a-cursor>
     </a-camera>
-      
-    <a-entity hand-controls="left"></a-entity>
-    <a-entity hand-controls="right"></a-entity>
   </a-scene>
 
   <!-- Browserified source !-->
