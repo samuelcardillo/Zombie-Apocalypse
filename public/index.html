@@ -39,7 +39,7 @@
 
      <!-- We add the controllers !-->
     <a-entity id="leftHand" position="0 2 -2" hand-controls="left"></a-entity>
-    <a-entity id="rightHand" position="0 2 -2" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
+    <a-entity id="rightHand" position="0 2 -2" hand-controls="right" controller-cursor raycaster="objects: .pickable, .enemy"></a-entity>
 
     <a-camera position="0 2 -2" sound="src: #scratchSound;"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
@@ -72,34 +72,36 @@
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
       const TRUCK             = document.querySelector(".truck");
       const PLAYER            = document.querySelector("a-camera");
+      const maxLife           = 5;
 
       var pickedGun     = null;
-      var targetEnnemy  = null;
+      var targetEnemy   = null;
       var score         = 0;
       var life          = 5;
 
       // Moving the truck
       setInterval(function(){
         TRUCK.setAttribute("rotation", Math.random() + " 0 0");
-        var ennemies = document.querySelectorAll(".ennemy");
+        var ennemies = document.querySelectorAll(".enemy");
       },100);
         
       // Spawning zombie function
       setInterval(function(){
         if(!playingGame) return;
-        var ennemies = document.querySelectorAll(".ennemy");
+        var ennemies = document.querySelectorAll(".enemy");
         for(var i = 0; i < ennemies.length; i++) {
-          var ennemyPosition = ennemies[i].components.position.data;
+          var enemyPosition = ennemies[i].components.position.data;
 
-          (ennemyPosition.z === -2) ? reduceLife() : ennemyPosition.z += 1;
+          (enemyPosition.z >= -2) ? reduceLife() : enemyPosition.z += 1;
+          if(enemyPosition.z >= -2) continue;
 
-          ennemies[i].setAttribute("position", ennemyPosition);
+          ennemies[i].setAttribute("position", enemyPosition);
           ennemies[i].components.position.update();
         }
 
         if(ennemies.length === 10) return;
 
-        createNewEnnemy();
+        createNewEnemy();
       }, 3000)
 
       // Grab the gun
@@ -115,24 +117,25 @@
         pickedGun.setAttribute("position", "0.013 0.005 -0.054");
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
 
-        updateText('Objection : Kill All Zombies');
+        updateInstruction('Objection : Kill All Zombies');
         generateStartPoint();
       });
 
       // Define if the player is targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
         if(evt.detail.intersectedEl === undefined) return;
-        else if(evt.detail.intersectedEl.className === "ennemy" ) {
-          targetEnnemy = evt.detail.intersectedEl;
+        else if(evt.detail.intersectedEl.className === "enemy" ) {
+          targetEnemy = evt.detail.intersectedEl;
           playingGame = true;
+          updateInstruction('Objection : Kill All Zombies');
         }
       })
 
       // Define if the player is no more targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseleave", function(evt) {
-        if(targetEnnemy === null) return;
+        if(targetEnemy === null) return;
 
-        targetEnnemy = null;
+        targetEnemy = null;
       })
 
       // When player shoot, kill the zombie or do nothing;
@@ -140,34 +143,34 @@
         if(pickedGun === null) return; 
 
         document.querySelector('[sound]').components.sound.playSound();
-        if(targetEnnemy === null) return;
-        SCENE.removeChild(targetEnnemy);
+        if(targetEnemy === null) return;
+        SCENE.removeChild(targetEnemy);
         score += 10;
         document.querySelector("a-text").setAttribute("value", "Score: " + score);
-        targetEnnemy = null;
+        targetEnemy = null;
       })
 
       // Starting game
       function generateStartPoint() {
-        createNewEnnemy();
+        createNewEnemy();
       }
 
       // Reduce life of the player
       function reduceLife() {
-        if(life === 0) return;
+        if(life === 0) return CallGameOver();
         var lifeText = document.querySelector(".life");
 
         PLAYER.components.sound.playSound();
 
         life--;
-        lifeText.setAttribute("value", "Life " + life);
+        lifeText.setAttribute("value", "Life: " + life);
         return true;
       }
 
       function createNewEnnemy() {
         var rand    = Math.floor(Math.random() * 2);
         var zombie  = document.createElement("a-obj-model");
-        zombie.setAttribute("class","ennemy");
+        zombie.setAttribute("class","enemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
         zombie.setAttribute("src","#zombie"+ rand +"-obj");
@@ -179,15 +182,32 @@
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
       }
+
+      // Create a game over function.
+      function CallGameOver() {
+        removeAllEnemies();
+        playingGame = false;
+        life = maxLife;
+        score = 0;
+        document.querySelector(".life").setAttribute("value", "Life " + life);
+        document.querySelector("a-text").setAttribute("value", "Score: " + score);
+        updateInstruction('Are you Giving up? Kill zombie!');
+        createNewEnemy();
+      }
+
+      function removeAllEnemies() {
+        var enemies = document.querySelectorAll('.enemy'); 
+        for(var i = 0; i < enemies.length; ++i) {
+          SCENE.removeChild(enemies[i]);
+        }
+      }
+      // Update Text.
+      function updateInstruction(newText) {
+        var instruction = document.getElementById('instruction');
+        instruction.setAttribute('text', 'value', newText);
+      }
+
     });
-
-   
-
-    // Update Text.
-    function updateText(newText) {
-      var instruction = document.getElementById('instruction');
-      instruction.setAttribute('text', 'value', newText);
-    }
 
     // Animate opacity.
     var instruction = document.getElementById('instruction');
