@@ -10,6 +10,7 @@
     <script src="assets/scripts/aframe-physics-components.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
     <script src="assets/scripts/aframe-physics-system.min.js"></script>
+    <script src="assets/scripts/aframe-look-at-component.min.js"></script>
 </head>
 <body>
   <a-scene physics-world="gravity: 0 -3.8 0">
@@ -28,8 +29,7 @@
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
-      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
-      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
+      <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
         
       <!-- rubix -->
       <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
@@ -45,7 +45,7 @@
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
     <!-- Truck !-->
-    <a-obj-model class="truck" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+    <a-obj-model class="truck" sound="src: #truckDriving; autoplay: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
 
@@ -68,16 +68,18 @@
       var pickedGun     = null;
       var targetEnnemy  = null;
 
+      // Moving the truck
       setInterval(function(){
         TRUCK.setAttribute("rotation", Math.random() + " 0 0")
       },100);
 
+      // Spawning zombie function
       setInterval(function(){
         if(document.querySelectorAll(".ennemy").length === 5) return; 
 
         var zombie = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
-        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 1));
+        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
         zombie.setAttribute("src","#zombie-obj");
         zombie.setAttribute("mtl","#zombie-mtl");
