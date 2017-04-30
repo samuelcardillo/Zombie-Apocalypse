@@ -38,10 +38,10 @@
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity id="leftHand" position="0 2 -2" hand-controls="left"></a-entity>
-    <a-entity id="rightHand" position="0 2 -2" hand-controls="right" controller-cursor raycaster="objects: .pickable, .enemy"></a-entity>
+    <!-- <a-entity id="leftHand" position="-0.5 2 -1.5" hand-controls="left"></a-entity> -->
+    <a-entity id="rightHand" position="-0.5 2 -1.5" hand-controls="right" controller-cursor raycaster="objects: .pickable, .enemy"></a-entity>
 
-    <a-camera position="0 2 -2" sound="src: #scratchSound;"></a-camera>
+    <a-camera position="-0.5 2 -1.5" sound="src: #scratchSound;"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
@@ -124,7 +124,7 @@
         else if(evt.detail.intersectedEl.className === "enemy" ) {
           targetEnemy = evt.detail.intersectedEl;
           playingGame = true;
-          updateInstruction('Objection : Kill All Zombies');
+          updateInstruction('Objective : Kill All Zombies');
         }
       })
 
@@ -165,16 +165,12 @@
       }
 
       function createNewEnemy() {
-        var rand    = Math.floor(Math.random() * 2);
         var zombie  = document.createElement("a-obj-model");
         zombie.setAttribute("class","enemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
-        zombie.setAttribute("src","#zombie"+ rand +"-obj");
-        zombie.setAttribute("mtl","#zombie"+ rand +"-mtl");
-        if(rand == 1){
-            zombie.setAttribute("rotation","0 -100 0");
-        }
+        zombie.setAttribute("src","#zombie0-obj");
+        zombie.setAttribute("mtl","#zombie0-mtl");
         zombie.setAttribute("look-controls","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
@@ -186,7 +182,7 @@
         playingGame = false;
         life = 5;
         score = 0;
-        document.querySelector(".life").setAttribute("value", "Life " + life);
+        document.querySelector(".life").setAttribute("value", "Life: " + life);
         document.querySelector("a-text").setAttribute("value", "Score: " + score);
         updateInstruction('Are you Giving up? Kill zombie!');
         createNewEnemy();
