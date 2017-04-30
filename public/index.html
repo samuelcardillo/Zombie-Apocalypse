@@ -53,8 +53,6 @@
     
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
       
-    <a-obj-model position="0 2 -5" rotation="0 -100 0" src="#zombie1-obj" mtl="#zombie1-mtl"></a-obj-model>
-      
     <a-entity id="instruction" position="2 10 -20"
               text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Search a gun and pick it.">
     </a-entity>
@@ -72,7 +70,6 @@
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
       const TRUCK             = document.querySelector(".truck");
       const PLAYER            = document.querySelector("a-camera");
-      const maxLife           = 5;
 
       var pickedGun     = null;
       var targetEnemy   = null;
@@ -167,7 +164,7 @@
         return true;
       }
 
-      function createNewEnnemy() {
+      function createNewEnemy() {
         var rand    = Math.floor(Math.random() * 2);
         var zombie  = document.createElement("a-obj-model");
         zombie.setAttribute("class","enemy");
@@ -187,7 +184,7 @@
       function CallGameOver() {
         removeAllEnemies();
         playingGame = false;
-        life = maxLife;
+        life = 5;
         score = 0;
         document.querySelector(".life").setAttribute("value", "Life " + life);
         document.querySelector("a-text").setAttribute("value", "Score: " + score);
