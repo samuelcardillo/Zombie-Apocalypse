@@ -25,6 +25,19 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+<<<<<<< Updated upstream
+=======
+
+      <!-- Gun asset -->
+      <!-- <a-asset-item id="gun" src="assets/models/gun/ablast/gun.json"></a-asset-item> !-->
+      <!-- <a-asset-item id="bullet" src="assets/models/gun/ablast/bullet.json"></a-asset-item> !-->
+    <!-- <audio id="laser-sound" src="assets/sounds/laser-sound.mp3" preload="auto"></audio> !-->
+        
+      <!-- rubix -->
+      <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
+      <a-asset-item id="rubix-mtl" src="assets/models/rubix/RubixCube.mtl"></a-asset-item>
+        
+>>>>>>> Stashed changes
     </a-assets>
 
      <!-- We add the controllers !-->
@@ -42,11 +55,25 @@
     <a-obj-model class="ennemy" physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0" position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
 
     <!-- Gun !-->
+<<<<<<< Updated upstream
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" rotation="60.07000000000001 0 0"></a-entity>
     
 
+=======
+    <a-entity scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" rotation="60.07000000000001 0 0"></a-entity>
+
+    <!-- Bullet !-->
+    <a-entity position="0.055 2.836 -2.462" object-model="src:url(assets/models/gun/ablast/bullet.json)" rotation="0 0 0" scale="0.4 0.4 0.4" visible="true"></a-entity>
+    
+    <!-- Throwable object !-->
+    <a-box hoverable clickable grabbable drag-droppable position="1 4 -1" color="red"></a-box>
+    
+    
+>>>>>>> Stashed changes
     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
    </a-scene>
+    
+   <!-- <a-sound src="assets/sounds/laser-sound.mp3" autoplay loop position="0 2 5"></a-sound> !-->
 
   <!-- Browserified source !-->
   <!-- <script src="core/bundled.js"></script> -->
