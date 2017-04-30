@@ -28,6 +28,8 @@
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
+      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
+      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
         
       <!-- rubix -->
       <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
@@ -35,15 +37,15 @@
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
-    <a-entity id="rightHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
+    <a-entity id="leftHand" position="0 2 -2" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
+    <a-entity id="rightHand" position="0 2 -2" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
-    <a-camera position="0 2 -1"></a-camera>
+    <a-camera position="0 2 -2"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
     <!-- Truck !-->
-    <a-obj-model physics-body="boundingBox: 3 3 12; mass: 0; velocity: 0" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+    <a-obj-model class="truck" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
 
@@ -61,9 +63,14 @@
     window.addEventListener("load", function(){
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
+      const TRUCK             = document.querySelector(".truck");
 
       var pickedGun     = null;
       var targetEnnemy  = null;
+
+      setInterval(function(){
+        TRUCK.setAttribute("rotation", Math.random() + " 0 0")
+      },100);
 
       setInterval(function(){
         if(document.querySelectorAll(".ennemy").length === 5) return; 
