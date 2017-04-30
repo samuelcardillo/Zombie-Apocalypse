@@ -36,7 +36,7 @@
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
     <a-entity id="rightHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
     <a-camera position="0 2 -1"></a-camera>
