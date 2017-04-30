@@ -35,7 +35,7 @@
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
     <a-entity id="rightHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
     <a-camera position="0 2 -1"></a-camera>
@@ -52,7 +52,9 @@
     <a-entity sound="src: #laserFire; poolSize: 2000;"></a-entity>
 
     <!-- Throwable object !-->
-    <a-box hoverable clickable grabbable drag-droppable position="1 4 -1" color="red"></a-box>
+    <a-box hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box>
+    
+    
 
     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
    </a-scene>
