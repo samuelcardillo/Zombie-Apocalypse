@@ -25,10 +25,13 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+
+      <!-- Audio asset !-->
+      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
+    <a-entity id="leftHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
     <a-entity id="rightHand" position="0 2 -1" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
     <a-camera position="0 2 -1"></a-camera>
@@ -43,6 +46,7 @@
 
     <!-- Gun !-->
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" rotation="60.07000000000001 0 0"></a-entity>
+    <a-entity sound="src: #laserFire; poolSize: 2000;"></a-entity>
     
 
     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
@@ -56,36 +60,49 @@
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
 
-      var pickedGun = null;
+      var pickedGun     = null;
+      var targetEnnemy  = null;
 
-      // We check if we are intersecting an ennemy or a gun
+      // Grab the gun
       RIGHT_CONTROLLER.addEventListener('click', function(evt) {
         if(evt.detail.intersectedEl === undefined) return; 
-        
-        // If its a gun
-        if(evt.detail.intersectedEl.className === "pickable") {
-          if(pickedGun !== null) return; 
+        if(evt.detail.intersectedEl.className !== "pickable") return;
+        if(pickedGun !== null) return; 
 
-          pickedGun = evt.detail.intersectedEl;
-          SCENE.removeChild(pickedGun);
-          RIGHT_CONTROLLER.appendChild(pickedGun);
-          pickedGun.setAttribute("class", "");
-          pickedGun.setAttribute("position", "0.013 0.005 -0.054");
-          pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
-        } 
-
-        if(evt.detail.intersectedEl.className === "ennemy") {
-          if(pickedGun === null) return; 
-
-          SCENE.removeChild(evt.detail.intersectedEl);
-        }
+        pickedGun = evt.detail.intersectedEl;
+        SCENE.removeChild(pickedGun);
+        RIGHT_CONTROLLER.appendChild(pickedGun);
+        pickedGun.setAttribute("class", "");
+        pickedGun.setAttribute("position", "0.013 0.005 -0.054");
+        pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
 
       });
 
-      /*RIGHT_CONTROLLER.addEventListener('pistolstart', function(evt) {
+      // Define if the player is targeting a zombie
+      RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
+        if(evt.detail.intersectedEl === undefined) return;
+        if(evt.detail.intersectedEl.className !== "ennemy") return;
+
+        targetEnnemy = evt.detail.intersectedEl;
+      })
+
+      // Define if the player is no more targeting a zombie
+      RIGHT_CONTROLLER.addEventListener("mouseleave", function(evt) {
+        if(targetEnnemy === null) return;
+
+        targetEnnemy = null;
+      })
+
+      // When player shoot, kill the zombie or do nothing;
+      RIGHT_CONTROLLER.addEventListener('triggerdown', function(evt) {
         if(pickedGun === null) return; 
 
-        var bullet = document.createElement("a-sphere");
+        document.querySelector('[sound]').components.sound.playSound();
+        if(targetEnnemy === null) return;
+        SCENE.removeChild(targetEnnemy);
+        targetEnnemy = null;
+
+        /*var bullet = document.createElement("a-sphere");
         bullet.setAttribute("color", "blue");
         bullet.setAttribute("radius", "0.030");
         bullet.setAttribute("position", AFRAME.utils.coordinates.stringify(RIGHT_CONTROLLER.components.position.data));
@@ -96,8 +113,8 @@
           var el = evt.detail.body;
 
           el.applyImpulse({ x: 10, y: 0, z: 0 }, { x: -1, y: 1, z: 0 });
-        });
-      })*/
+        });*/
+      })
 
 
 
