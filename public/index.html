@@ -20,13 +20,17 @@
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
       <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
 
-      <!-- Zombie1 asset !-->
+      <!-- Zombie0 asset !-->
       <a-asset-item id="zombie0-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie0-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
         
+      <!-- Zombie1 asset !-->
+      <a-asset-item id="zombie1-obj" src="assets/models/zombie/zombie_axe.obj"></a-asset-item>
+      <a-asset-item id="zombie1-mtl" src="assets/models/zombie/zombie_axe.mtl"></a-asset-item>
+        
       <!-- Zombie2 asset !-->
-      <a-asset-item id="zombie1-obj" src="assets/models/zombie2/zombie.obj"></a-asset-item>
-      <a-asset-item id="zombie1-mtl" src="assets/models/zombie2/zombie.mtl"></a-asset-item>
+      <a-asset-item id="zombie2-obj" src="assets/models/zombie/zombie_fire.obj"></a-asset-item>
+      <a-asset-item id="zombie2-mtl" src="assets/models/zombie/zombie_fire.mtl"></a-asset-item>
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
@@ -163,7 +167,7 @@
       }
 
       function createNewEnnemy() {
-        var rand    = Math.floor(Math.random() * 2);
+        var rand    = Math.floor(Math.random() * 3);
         var zombie  = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
