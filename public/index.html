@@ -17,7 +17,7 @@
     <!-- We load the assets for the game !-->
     <a-assets>
       <!-- Background video !-->
-      <video id="video" src="assets/background.mp4" autoplay loop muted crossorigin></video>
+      <video id="video" src="assets/background.mp4" autoplay loop muted preload="auto"></video>
 
       <!-- Pickup assets !-->
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
@@ -30,6 +30,7 @@
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
       <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
+      <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3" preload="auto"></audio>
         
       <!-- rubix -->
       <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
@@ -45,7 +46,11 @@
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
     <!-- Truck !-->
-    <a-obj-model class="truck" sound="src: #truckDriving; autoplay: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+    <a-obj-model class="truck" sound="src: #truckDriving; autoplay: true; loop: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl">
+      <a-text color="red" class="score" value="Score: 0" position="0.520 2.159 -5.546"></a-text>
+      <a-text color="red" class="life" value="Life: 5" position="-1.354 2.159 -5.546"></a-text>
+    </a-obj-model>
+    
 
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
 
@@ -53,7 +58,7 @@
     <a-box class="throwable" hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box> !-->
     <a-sphere class="throwable" dynamic-body position="-1 2 -1" radius="0.50" color="green"></a-sphere>
 
-    <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
+    <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objective : Kill The Zombies."></a-entity>
    </a-scene>
 
   <!-- Browserified source !-->
@@ -64,27 +69,42 @@
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
       const TRUCK             = document.querySelector(".truck");
+      const PLAYER            = document.querySelector("a-camera");
 
       var pickedGun     = null;
       var targetEnnemy  = null;
+      var score         = 0;
+      var life          = 5;
 
       // Moving the truck
       setInterval(function(){
-        TRUCK.setAttribute("rotation", Math.random() + " 0 0")
+        TRUCK.setAttribute("rotation", Math.random() + " 0 0");
+        var ennemies = document.querySelectorAll(".ennemy");
       },100);
 
       // Spawning zombie function
       setInterval(function(){
-        if(document.querySelectorAll(".ennemy").length === 5) return; 
+        var ennemies = document.querySelectorAll(".ennemy");
+        for(var i = 0; i < ennemies.length; i++) {
+          var ennemyPosition = ennemies[i].components.position.data;
+
+          (ennemyPosition.z === -2) ? reduceLife() : ennemyPosition.z += 1;
+
+          ennemies[i].setAttribute("position", ennemyPosition);
+          ennemies[i].components.position.update();
+        }
+
+        if(ennemies.length === 10) return;
 
         var zombie = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
-        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
+        zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
         zombie.setAttribute("src","#zombie-obj");
         zombie.setAttribute("mtl","#zombie-mtl");
+        zombie.setAttribute("look-controls","");
+        zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
-        zombie.setAttribute("physics-body","boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0");
       }, 3000)
 
       // Grab the gun
@@ -123,24 +143,19 @@
         document.querySelector('[sound]').components.sound.playSound();
         if(targetEnnemy === null) return;
         SCENE.removeChild(targetEnnemy);
+        score += 10;
+        document.querySelector("a-text").setAttribute("value", "Score: " + score);
         targetEnnemy = null;
-
-        /*var bullet = document.createElement("a-sphere");
-        bullet.setAttribute("color", "blue");
-        bullet.setAttribute("radius", "0.030");
-        bullet.setAttribute("position", AFRAME.utils.coordinates.stringify(RIGHT_CONTROLLER.components.position.data));
-        bullet.setAttribute("radius", "0.02");
-        SCENE.appendChild(bullet);
-        bullet.setAttribute("dynamic-body", "mass: 0;");
-        bullet.addEventListener('body-loaded', function(evt){
-          var el = evt.detail.body;
-
-          el.applyImpulse({ x: 10, y: 0, z: 0 }, { x: -1, y: 1, z: 0 });
-        });*/
       })
 
+      function reduceLife() {
+        if(life === 0) return;
+        var lifeText = document.querySelector(".life");
 
-
+        life--;
+        lifeText.setAttribute("value", "Life " + life);
+        return true;
+      }
 
     });
   </script>
