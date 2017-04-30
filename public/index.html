@@ -116,9 +116,7 @@
       // Define if the player is targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
         if(evt.detail.intersectedEl === undefined) return;
-        else if(evt.detail.intersectedEl.className === "ennemy" ) 
-          targetEnnemy = evt.detail.intersectedEl;
-        else if(evt.detail.intersectedEl.className === "startPoint" ) {
+        else if(evt.detail.intersectedEl.className === "ennemy" ) {
           targetEnnemy = evt.detail.intersectedEl;
           playingGame = true;
         }
