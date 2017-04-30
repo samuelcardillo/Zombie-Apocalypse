@@ -6,10 +6,7 @@
 
     <!-- Importing other components !-->
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.0/dist/aframe-extras.min.js"></script>
-    <script src="assets/scripts/super-hands.min.js"></script>
-    <script src="assets/scripts/aframe-physics-components.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
-    <script src="assets/scripts/aframe-physics-system.min.js"></script>
     <script src="assets/scripts/aframe-look-at-component.min.js"></script>
 </head>
 <body>
@@ -32,14 +29,11 @@
       <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
       <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3" preload="auto"></audio>
         
-      <!-- rubix -->
-      <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
-      <a-asset-item id="rubix-mtl" src="assets/models/rubix/RubixCube.mtl"></a-asset-item>
     </a-assets>
 
      <!-- We add the controllers !-->
-    <a-entity id="leftHand" position="0 2 -2" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
-    <a-entity id="rightHand" position="0 2 -2" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
+    <a-entity id="leftHand" position="0 2 -2" hand-controls="left"></a-entity>
+    <a-entity id="rightHand" position="0 2 -2" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
     <a-camera position="0 2 -2"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
@@ -51,15 +45,13 @@
       <a-text color="red" class="life" value="Life: 5" position="-1.354 2.159 -5.546"></a-text>
     </a-obj-model>
     
-
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
 
-    <!-- Throwable object 
-    <a-box class="throwable" hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box> !-->
-    <a-sphere class="throwable" dynamic-body position="-1 2 -1" radius="0.50" color="green"></a-sphere>
-
-    <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objective : Kill The Zombies."></a-entity>
-   </a-scene>
+      
+    <a-entity id="instruction" position="2 10 -20"
+              text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Search a gun and pick it.">
+    </a-entity>
+  </a-scene>
 
   <!-- Browserified source !-->
   <!-- <script src="core/bundled.js"></script> -->
@@ -119,6 +111,8 @@
         pickedGun.setAttribute("class", "");
         pickedGun.setAttribute("position", "0.013 0.005 -0.054");
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
+
+        updateText('Objection : Kill All Zombies');
       });
 
       // Define if the player is targeting a zombie
@@ -147,17 +141,35 @@
         document.querySelector("a-text").setAttribute("value", "Score: " + score);
         targetEnnemy = null;
       })
-
-      function reduceLife() {
-        if(life === 0) return;
-        var lifeText = document.querySelector(".life");
-
-        life--;
-        lifeText.setAttribute("value", "Life " + life);
-        return true;
-      }
-
     });
-  </script>
+
+    // Reduce life of the player
+    function reduceLife() {
+      if(life === 0) return;
+      var lifeText = document.querySelector(".life");
+
+      life--;
+      lifeText.setAttribute("value", "Life " + life);
+      return true;
+    }
+
+    // Update Text.
+    function updateText(newText) {
+      var instruction = document.getElementById('instruction');
+      instruction.setAttribute('text', 'value', newText);
+    }
+
+    // Animate opacity.
+    var instruction = document.getElementById('instruction');
+    var obj = {opacity: 0};
+    var tween = new AFRAME.TWEEN.Tween(obj)
+      .to({opacity: 1}, 500)
+      .repeat( Infinity )
+      .yoyo( true )
+      .onUpdate(function () {
+        instruction.setAttribute('text', 'opacity', obj.opacity);
+      })
+      .start();
+    </script>
 </body>
 </html>
