@@ -25,12 +25,9 @@
       <a-asset-item id="zombie0-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
         
       <!-- Zombie1 asset !-->
-      <a-asset-item id="zombie1-obj" src="assets/models/zombie/zombie_axe.obj"></a-asset-item>
-      <a-asset-item id="zombie1-mtl" src="assets/models/zombie/zombie_axe.mtl"></a-asset-item>
+      <a-asset-item id="zombie1-obj" src="assets/models/zombie2/zombie.obj"></a-asset-item>
+      <a-asset-item id="zombie1-mtl" src="assets/models/zombie2/zombie.mtl"></a-asset-item>
         
-      <!-- Zombie2 asset !-->
-      <a-asset-item id="zombie2-obj" src="assets/models/zombie/zombie_fire.obj"></a-asset-item>
-      <a-asset-item id="zombie2-mtl" src="assets/models/zombie/zombie_fire.mtl"></a-asset-item>
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
@@ -55,7 +52,8 @@
     </a-obj-model>
     
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
-
+      
+    <a-obj-model position="0 2 -5" rotation="0 -100 0" src="#zombie1-obj" mtl="#zombie1-mtl"></a-obj-model>
       
     <a-entity id="instruction" position="2 10 -20"
               text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Search a gun and pick it.">
@@ -167,13 +165,16 @@
       }
 
       function createNewEnnemy() {
-        var rand    = Math.floor(Math.random() * 3);
+        var rand    = Math.floor(Math.random() * 2);
         var zombie  = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
         zombie.setAttribute("src","#zombie"+ rand +"-obj");
         zombie.setAttribute("mtl","#zombie"+ rand +"-mtl");
+        if(rand == 1){
+            zombie.setAttribute("rotation","0 -100 0");
+        }
         zombie.setAttribute("look-controls","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
