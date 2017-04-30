@@ -20,9 +20,17 @@
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
       <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
 
-      <!-- Zombie asset !-->
-      <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
-      <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+      <!-- Zombie0 asset !-->
+      <a-asset-item id="zombie0-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
+      <a-asset-item id="zombie0-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+        
+      <!-- Zombie1 asset !-->
+      <a-asset-item id="zombie1-obj" src="assets/models/zombie/zombie_axe.obj"></a-asset-item>
+      <a-asset-item id="zombie1-mtl" src="assets/models/zombie/zombie_axe.mtl"></a-asset-item>
+        
+      <!-- Zombie2 asset !-->
+      <a-asset-item id="zombie2-obj" src="assets/models/zombie/zombie_fire.obj"></a-asset-item>
+      <a-asset-item id="zombie2-mtl" src="assets/models/zombie/zombie_fire.mtl"></a-asset-item>
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
@@ -160,14 +168,14 @@
         return true;
       }
 
-      // Create an enermy for the beginning of the game.
-      function createNewEnemy() {
-        var zombie = document.createElement("a-obj-model");
-        zombie.setAttribute("class","enemy");
+      function createNewEnnemy() {
+        var rand    = Math.floor(Math.random() * 3);
+        var zombie  = document.createElement("a-obj-model");
+        zombie.setAttribute("class","ennemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
-        zombie.setAttribute("src","#zombie-obj");
-        zombie.setAttribute("mtl","#zombie-mtl");
+        zombie.setAttribute("src","#zombie"+ rand +"-obj");
+        zombie.setAttribute("mtl","#zombie"+ rand +"-mtl");
         zombie.setAttribute("look-controls","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
