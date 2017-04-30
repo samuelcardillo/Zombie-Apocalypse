@@ -28,6 +28,7 @@
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
       <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
       <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3" preload="auto"></audio>
+      <audio id="scratchSound" src="assets/sounds/scrach-full-sound.mp3" preload="auto"></audio>
         
     </a-assets>
 
@@ -35,7 +36,7 @@
     <a-entity id="leftHand" position="0 2 -2" hand-controls="left"></a-entity>
     <a-entity id="rightHand" position="0 2 -2" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
 
-    <a-camera position="0 2 -2"></a-camera>
+    <a-camera position="0 2 -2" sound="src: #scratchSound;"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
@@ -141,17 +142,21 @@
         document.querySelector("a-text").setAttribute("value", "Score: " + score);
         targetEnnemy = null;
       })
+
+      // Reduce life of the player
+      function reduceLife() {
+        if(life === 0) return;
+        var lifeText = document.querySelector(".life");
+
+        PLAYER.components.sound.playSound();
+
+        life--;
+        lifeText.setAttribute("value", "Life " + life);
+        return true;
+      }
     });
 
-    // Reduce life of the player
-    function reduceLife() {
-      if(life === 0) return;
-      var lifeText = document.querySelector(".life");
-
-      life--;
-      lifeText.setAttribute("value", "Life " + life);
-      return true;
-    }
+   
 
     // Update Text.
     function updateText(newText) {
