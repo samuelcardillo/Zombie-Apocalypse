@@ -42,11 +42,23 @@
     <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
     <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
 
-    <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies.">
-      </a-entity>
+    <a-entity id="opacity" material="opacity: 0" position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
    </a-scene>
 
   <!-- Browserified source !-->
   <script src="core/bundled.js"></script>
 </body>
+<!-- <script type="text/javascript">
+  var fadeValue = -0.1;
+
+  setInterval(function(){
+    var opacity = document.getElementById('opacity');
+    var value = parseFloat(opacity.getAttribute('opacity'))
+    value += fadeValue;
+    // console.log(value);
+    if(value <= 0.0) {fadeValue = 0.1; value = 0.0;}
+    else if(value >= 1.0) {fadeValue = -0.1; value= 1.0;}
+    opacity.setAttribute('opacity', value);
+  }, 1000);
+</script> -->
 </html>
