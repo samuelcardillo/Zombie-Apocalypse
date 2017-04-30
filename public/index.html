@@ -58,6 +58,9 @@
   <!-- <script src="core/bundled.js"></script> -->
 
   <script type="text/javascript">
+    // Game status: true means playing.
+    var playingGame = false;
+
     window.addEventListener("load", function(){
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
@@ -77,6 +80,7 @@
 
       // Spawning zombie function
       setInterval(function(){
+        if(!playingGame) return;
         var ennemies = document.querySelectorAll(".ennemy");
         for(var i = 0; i < ennemies.length; i++) {
           var ennemyPosition = ennemies[i].components.position.data;
@@ -89,15 +93,7 @@
 
         if(ennemies.length === 10) return;
 
-        var zombie = document.createElement("a-obj-model");
-        zombie.setAttribute("class","ennemy");
-        zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
-        zombie.setAttribute("scale","1.6 2 1.6");
-        zombie.setAttribute("src","#zombie-obj");
-        zombie.setAttribute("mtl","#zombie-mtl");
-        zombie.setAttribute("look-controls","");
-        zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
-        SCENE.appendChild(zombie);
+        createNewEnnemy();
       }, 3000)
 
       // Grab the gun
@@ -114,14 +110,18 @@
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
 
         updateText('Objection : Kill All Zombies');
+        generateStartPoint();
       });
 
       // Define if the player is targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
         if(evt.detail.intersectedEl === undefined) return;
-        if(evt.detail.intersectedEl.className !== "ennemy") return;
-
-        targetEnnemy = evt.detail.intersectedEl;
+        else if(evt.detail.intersectedEl.className === "ennemy" ) 
+          targetEnnemy = evt.detail.intersectedEl;
+        else if(evt.detail.intersectedEl.className === "startPoint" ) {
+          targetEnnemy = evt.detail.intersectedEl;
+          playingGame = true;
+        }
       })
 
       // Define if the player is no more targeting a zombie
@@ -143,6 +143,11 @@
         targetEnnemy = null;
       })
 
+      // Starting game
+      function generateStartPoint() {
+        createNewEnnemy();
+      }
+
       // Reduce life of the player
       function reduceLife() {
         if(life === 0) return;
@@ -153,6 +158,18 @@
         life--;
         lifeText.setAttribute("value", "Life " + life);
         return true;
+      }
+
+      function createNewEnnemy() {
+        var zombie = document.createElement("a-obj-model");
+        zombie.setAttribute("class","ennemy");
+        zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
+        zombie.setAttribute("scale","1.6 2 1.6");
+        zombie.setAttribute("src","#zombie-obj");
+        zombie.setAttribute("mtl","#zombie-mtl");
+        zombie.setAttribute("look-controls","");
+        zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
+        SCENE.appendChild(zombie);
       }
     });
 
