@@ -147,8 +147,7 @@
 
       // Starting game
       function generateStartPoint() {
-        var rand = Math.floor(Math.random() * 1);
-        createNewEnnemy(rand);
+        createNewEnnemy();
       }
 
       // Reduce life of the player
@@ -163,13 +162,14 @@
         return true;
       }
 
-      function createNewEnnemy(rand) {
-        var zombie = document.createElement("a-obj-model");
+      function createNewEnnemy() {
+        var rand    = Math.floor(Math.random() * 2);
+        var zombie  = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
-        zombie.setAttribute("src","#zombie"+rand+"-obj");
-        zombie.setAttribute("mtl","#zombie"+rand+"-mtl");
+        zombie.setAttribute("src","#zombie"+ rand +"-obj");
+        zombie.setAttribute("mtl","#zombie"+ rand +"-mtl");
         zombie.setAttribute("look-controls","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
         SCENE.appendChild(zombie);
