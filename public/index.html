@@ -10,7 +10,6 @@
     <script src="assets/scripts/aframe-physics-components.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
     <script src="assets/scripts/aframe-physics-system.min.js"></script>
-    <script src="assets/scripts/json-model.js"></script>
 </head>
 <body>
   <a-scene physics-world="gravity: 0 -3.8 0">
@@ -46,15 +45,7 @@
     <!-- Truck !-->
     <a-obj-model physics-body="boundingBox: 3 3 12; mass: 0; velocity: 0" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
-    <!-- Zombie !-->
-    <a-obj-model class="ennemy" physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0" position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model>
-
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
-
-    <!-- Throwable object !-->
-    <a-box class="throwable" hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box>
-
-    <a-box hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box>
 
     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
    </a-scene>
@@ -69,6 +60,19 @@
 
       var pickedGun     = null;
       var targetEnnemy  = null;
+
+      setInterval(function(){
+        if(document.querySelectorAll(".ennemy").length === 5) return; 
+
+        var zombie = document.createElement("a-obj-model");
+        zombie.setAttribute("class","ennemy");
+        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 1));
+        zombie.setAttribute("scale","1.6 2 1.6");
+        zombie.setAttribute("src","#zombie-obj");
+        zombie.setAttribute("mtl","#zombie-mtl");
+        SCENE.appendChild(zombie);
+        zombie.setAttribute("physics-body","boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0");
+      }, 3000)
 
       // Grab the gun
       RIGHT_CONTROLLER.addEventListener('click', function(evt) {
