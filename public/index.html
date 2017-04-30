@@ -21,12 +21,12 @@
       <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
 
       <!-- Zombie1 asset !-->
-      <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
-      <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+      <a-asset-item id="zombie0-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
+      <a-asset-item id="zombie0-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
         
       <!-- Zombie2 asset !-->
-      <a-asset-item id="zombie-obj" src="assets/models/zombie%25202/zombie.obj"></a-asset-item>
-      <a-asset-item id="zombie-mtl" src="assets/models/zombie%25202/zombie.mtl"></a-asset-item>
+      <a-asset-item id="zombie1-obj" src="assets/models/zombie2/zombie.obj"></a-asset-item>
+      <a-asset-item id="zombie1-mtl" src="assets/models/zombie2/zombie.mtl"></a-asset-item>
 
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
@@ -147,7 +147,7 @@
 
       // Starting game
       function generateStartPoint() {
-        var rand = myArray[Math.floor(Math.random() * 2)];
+        var rand = Math.floor(Math.random() * 1);
         createNewEnnemy(rand);
       }
 
