@@ -69,6 +69,9 @@
   <!-- <script src="core/bundled.js"></script> -->
 
   <script type="text/javascript">
+    // Game status: true means playing.
+    var playingGame = false;
+
     window.addEventListener("load", function(){
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
@@ -85,6 +88,7 @@
       // Spawning zombie function
       setInterval(function(){
         if(document.querySelectorAll(".ennemy").length === 5) return; 
+        if(!playingGame) return;
 
         var zombie = document.createElement("a-obj-model");
         zombie.setAttribute("class","ennemy");
@@ -110,14 +114,18 @@
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
 
         updateText('Objection : Kill All Zombies');
+        generateStartPoint();
       });
 
       // Define if the player is targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
         if(evt.detail.intersectedEl === undefined) return;
-        if(evt.detail.intersectedEl.className !== "ennemy") return;
-
-        targetEnnemy = evt.detail.intersectedEl;
+        else if(evt.detail.intersectedEl.className === "ennemy" ) 
+          targetEnnemy = evt.detail.intersectedEl;
+        else if(evt.detail.intersectedEl.className === "startPoint" ) {
+          targetEnnemy = evt.detail.intersectedEl;
+          playingGame = true;
+        }
       })
 
       // Define if the player is no more targeting a zombie
@@ -136,6 +144,18 @@
         SCENE.removeChild(targetEnnemy);
         targetEnnemy = null;
       })
+
+      // Starting game
+      function generateStartPoint() {
+        var zombie = document.createElement("a-obj-model");
+        zombie.setAttribute("class","startPoint");
+        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
+        zombie.setAttribute("scale","1.6 2 1.6");
+        zombie.setAttribute("src","#zombie-obj");
+        zombie.setAttribute("mtl","#zombie-mtl");
+        SCENE.appendChild(zombie);
+        zombie.setAttribute("physics-body","boundingBox: 1 1 1; mass: 5; velocity: 0 0 0");
+      }
     });
 
       // Update Text.
