@@ -3,11 +3,14 @@
 <head>
     <!-- Importing a-frame !-->
     <script src="aframe.min.js"></script>
-    
+
     <!-- Importing other components !-->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.0/dist/aframe-extras.min.js"></script>
     <script src="assets/scripts/super-hands.min.js"></script>
-    <script src="assets/scripts/aframe-extras.min.js"></script>
     <script src="assets/scripts/aframe-physics-components.min.js"></script>
+    <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
+    <script src="assets/scripts/aframe-physics-system.min.js"></script>
+    <script src="assets/scripts/aframe-look-at-component.min.js"></script>
 </head>
 <body>
   <a-scene physics-world="gravity: 0 -3.8 0">
@@ -23,42 +26,135 @@
       <!-- Zombie asset !-->
       <a-asset-item id="zombie-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
       <a-asset-item id="zombie-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
+
+      <!-- Audio asset !-->
+      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
+      <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
+        
+      <!-- rubix -->
+      <a-asset-item id="rubix-obj" src="assets/models/rubix/RubixCube.obj"></a-asset-item>
+      <a-asset-item id="rubix-mtl" src="assets/models/rubix/RubixCube.mtl"></a-asset-item>
+        
     </a-assets>
 
-    <!-- We define the environment !-->
-    <a-camera position="0 3 0.5"></a-camera>
+     <!-- We add the controllers !-->
+    <a-entity id="leftHand" position="0 2 -2" super-hands sphere-collider="objects: .throwable" grab hand-controls="left"></a-entity>
+    <a-entity id="rightHand" position="0 2 -2" super-hands sphere-collider="objects: a-box" hand-controls="right" controller-cursor raycaster="objects: .pickable, .ennemy"></a-entity>
+
+    <a-camera position="0 2 -2"></a-camera>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
     <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
 
     <!-- Truck !-->
-    <a-box color="red" scale="2 2 2" physics-body="boundingBox: 2 2 2; mass: 5; velocity: 0" position=" 0 5 -2"></a-box>
-    <a-obj-model physics-body="boundingBox: 3 3 12; mass: 0; velocity: 0" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
+    <a-obj-model class="truck" sound="src: #truckDriving; autoplay: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl"></a-obj-model>
 
-    <!-- Zombie !-->
-    <a-obj-model physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0" position="0 5 -5" scale="1.6 2 1.6" src="#zombie-obj" mtl="#zombie-mtl"></a-obj-model> 
+    <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
 
-    
-    <!-- We add the controllers !-->
-    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="left"></a-entity>
-    <a-entity position="0 3 0.5" super-hands sphere-collider="objects: a-box" hand-controls="right"></a-entity>
+    <!-- Throwable object 
+    <a-box class="throwable" hoverable clickable grabbable drag-droppable position="-1 2 -1" color="red"></a-box> !-->
+    <a-sphere class="throwable" dynamic-body position="-1 2 -1" radius="0.50" color="green"></a-sphere>
+      
+      <!--
+     <a-entity position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
+      -->
+      
+    <a-entity id="instruction" position="2 10 -20"
+              text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Search a gun and pick it.">
+    </a-entity>
 
-    <a-entity id="opacity" material="opacity: 0" position="2 10 -20" text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Kill All Zombies."></a-entity>
-   </a-scene>
+
+  </a-scene>
 
   <!-- Browserified source !-->
-  <script src="core/bundled.js"></script>
-</body>
-<!-- <script type="text/javascript">
-  var fadeValue = -0.1;
+  <!-- <script src="core/bundled.js"></script> -->
 
-  setInterval(function(){
-    var opacity = document.getElementById('opacity');
-    var value = parseFloat(opacity.getAttribute('opacity'))
-    value += fadeValue;
-    // console.log(value);
-    if(value <= 0.0) {fadeValue = 0.1; value = 0.0;}
-    else if(value >= 1.0) {fadeValue = -0.1; value= 1.0;}
-    opacity.setAttribute('opacity', value);
-  }, 1000);
-</script> -->
+  <script type="text/javascript">
+    window.addEventListener("load", function(){
+      const SCENE             = document.querySelector("a-scene");
+      const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
+      const TRUCK             = document.querySelector(".truck");
+
+      var pickedGun     = null;
+      var targetEnnemy  = null;
+
+      // Moving the truck
+      setInterval(function(){
+        TRUCK.setAttribute("rotation", Math.random() + " 0 0")
+      },100);
+
+      // Spawning zombie function
+      setInterval(function(){
+        if(document.querySelectorAll(".ennemy").length === 5) return; 
+
+        var zombie = document.createElement("a-obj-model");
+        zombie.setAttribute("class","ennemy");
+        zombie.setAttribute("position", Math.floor((Math.random() * 10) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
+        zombie.setAttribute("scale","1.6 2 1.6");
+        zombie.setAttribute("src","#zombie-obj");
+        zombie.setAttribute("mtl","#zombie-mtl");
+        SCENE.appendChild(zombie);
+        zombie.setAttribute("physics-body","boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0");
+      }, 3000)
+
+      // Grab the gun
+      RIGHT_CONTROLLER.addEventListener('click', function(evt) {
+        if(evt.detail.intersectedEl === undefined) return; 
+        if(evt.detail.intersectedEl.className !== "pickable") return;
+        if(pickedGun !== null) return; 
+
+        pickedGun = evt.detail.intersectedEl;
+        SCENE.removeChild(pickedGun);
+        RIGHT_CONTROLLER.appendChild(pickedGun);
+        pickedGun.setAttribute("class", "");
+        pickedGun.setAttribute("position", "0.013 0.005 -0.054");
+        pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
+
+        updateText('Objection : Kill All Zombies');
+      });
+
+      // Define if the player is targeting a zombie
+      RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
+        if(evt.detail.intersectedEl === undefined) return;
+        if(evt.detail.intersectedEl.className !== "ennemy") return;
+
+        targetEnnemy = evt.detail.intersectedEl;
+      })
+
+      // Define if the player is no more targeting a zombie
+      RIGHT_CONTROLLER.addEventListener("mouseleave", function(evt) {
+        if(targetEnnemy === null) return;
+
+        targetEnnemy = null;
+      })
+
+      // When player shoot, kill the zombie or do nothing;
+      RIGHT_CONTROLLER.addEventListener('triggerdown', function(evt) {
+        if(pickedGun === null) return; 
+
+        document.querySelector('[sound]').components.sound.playSound();
+        if(targetEnnemy === null) return;
+        SCENE.removeChild(targetEnnemy);
+        targetEnnemy = null;
+      })
+    });
+
+      // Update Text.
+      function updateText(newText) {
+        var instruction = document.getElementById('instruction');
+        instruction.setAttribute('text', 'value', newText);
+      }
+
+      // Animate opacity.
+      var instruction = document.getElementById('instruction');
+      var obj = {opacity: 0};
+      var tween = new AFRAME.TWEEN.Tween(obj)
+        .to({opacity: 1}, 500)
+        .repeat( Infinity )
+        .yoyo( true )
+        .onUpdate(function () {
+          instruction.setAttribute('text', 'opacity', obj.opacity);
+        })
+        .start();
+    </script>
+</body>
 </html>
