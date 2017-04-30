@@ -77,9 +77,9 @@
       const maxLife           = 5;
 
       var pickedGun     = null;
-      var targetEnemy  = null;
+      var targetEnemy   = null;
       var score         = 0;
-      var life          = maxLife;
+      var life          = 5;
 
       // Moving the truck
       setInterval(function(){
@@ -94,7 +94,8 @@
         for(var i = 0; i < ennemies.length; i++) {
           var enemyPosition = ennemies[i].components.position.data;
 
-          (enemyPosition.z === -2) ? reduceLife() : enemyPosition.z += 1;
+          (enemyPosition.z >= -2) ? reduceLife() : enemyPosition.z += 1;
+          if(enemyPosition.z >= -2) continue;
 
           ennemies[i].setAttribute("position", enemyPosition);
           ennemies[i].components.position.update();
@@ -158,20 +159,20 @@
 
       // Reduce life of the player
       function reduceLife() {
-        if(life === 0) return;
+        if(life === 0) return CallGameOver();
         var lifeText = document.querySelector(".life");
 
         PLAYER.components.sound.playSound();
 
         life--;
-        lifeText.setAttribute("value", "Life " + life);
+        lifeText.setAttribute("value", "Life: " + life);
         return true;
       }
 
-      function createNewEnnemy() {
+      function createNewEnemy() {
         var rand    = Math.floor(Math.random() * 3);
         var zombie  = document.createElement("a-obj-model");
-        zombie.setAttribute("class","ennemy");
+        zombie.setAttribute("class","enemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
         zombie.setAttribute("src","#zombie"+ rand +"-obj");
