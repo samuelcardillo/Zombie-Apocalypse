@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Zombie Apocalypse - VR Game Jam Hackathon</title>
-    
+
     <!-- Importing a-frame !-->
     <script src="aframe.min.js"></script>
 
@@ -133,7 +133,7 @@
       RIGHT_CONTROLLER.addEventListener('triggerdown', function(evt) {
         if(pickedGun === null) return; 
 
-        document.querySelector('[sound]').components.sound.playSound();
+        pickedGun.components.sound.playSound();
         if(targetEnemy === null) return;
         SCENE.removeChild(targetEnemy);
         score += 10;
