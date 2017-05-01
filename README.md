@@ -1,7 +1,7 @@
 # Zombie Apocalypse
 ### VR Game Jam Hackathon (April 29th-30 2017)
 
-![Zombie Apocalypse](https://experiments.samuelcardillo.com/images/projects/zombieapocalypse.gif)
+![Zombie Apocalypse](zombieapocalypse.gif)
 
 **Zombie Apocalypse** is a mini First Person Shooter made in less than 24 hours for the **VR Game Jam Hackathon** in *East London*  organized by **Realities Center** which consist in building a Virtual Reality game in a very short period of time.
 
