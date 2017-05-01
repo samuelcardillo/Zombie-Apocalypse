@@ -1,16 +1,17 @@
 
 <html>
-<head>
+  <head>
+    <title>Zombie Apocalypse - VR Game Jam Hackathon</title>
+    
     <!-- Importing a-frame !-->
     <script src="aframe.min.js"></script>
 
     <!-- Importing other components !-->
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.0/dist/aframe-extras.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
-    <script src="assets/scripts/aframe-look-at-component.min.js"></script>
-</head>
-<body>
-  <a-scene physics-world="gravity: 0 -3.8 0">
+  </head>
+  <body>
+  <a-scene>
     <!-- We load the assets for the game !-->
     <a-assets>
       <!-- Background video !-->
@@ -28,78 +29,71 @@
       <a-asset-item id="zombie1-obj" src="assets/models/zombie2/zombie.obj"></a-asset-item>
       <a-asset-item id="zombie1-mtl" src="assets/models/zombie2/zombie.mtl"></a-asset-item>
         
-
       <!-- Audio asset !-->
       <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
       <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
       <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3" preload="auto"></audio>
       <audio id="scratchSound" src="assets/sounds/scrach-full-sound.mp3" preload="auto"></audio>
-        
     </a-assets>
 
-     <!-- We add the controllers !-->
-    <!-- <a-entity id="leftHand" position="-0.5 2 -1.5" hand-controls="left"></a-entity> -->
-    <a-entity id="rightHand" position="-0.5 2 -1.5" hand-controls="right" controller-cursor raycaster="objects: .pickable, .enemy"></a-entity>
-
-    <a-camera position="-0.5 2 -1.5" sound="src: #scratchSound;"></a-camera>
+    <!-- Player, controllers & environment !-->
+    <a-entity id="player" position="-0.5 2 -1.5" sound="src: #scratchSound;" camera look-controls></a-entity>
     <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
-    <a-entity id="ground" geometry="primitive: box; depth: 50; height: 0.1; width: 30" material="color: #2E3837" physics-body="mass: 0; boundingBox: 50 0.1 50" position="0 0 -10" visible="false"></a-entity>
-
+    <a-entity 
+      id="rightHand"
+      raycaster="objects: .pickable, .enemy" 
+      position="-0.5 2 -1.5" 
+      hand-controls="right" 
+      controller-cursor>
+    </a-entity>
+    
     <!-- Truck !-->
-    <a-obj-model class="truck" sound="src: #truckDriving; autoplay: true; loop: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl">
+    <a-obj-model id="truck" sound="src: #truckDriving; autoplay: true; loop: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl">
       <a-text color="red" class="score" value="Score: 0" position="0.520 2.159 -5.546"></a-text>
       <a-text color="red" class="life" value="Life: 5" position="-1.354 2.159 -5.546"></a-text>
+
+      <a-animation attribute="rotation" to="0.5 0 0" repeat="indefinite" dur="100" direction="alternate"></a-animation>
     </a-obj-model>
-    
+
+    <!-- Gun !-->
     <a-entity id="laserGun" class="pickable" scale="1 1 1" position="0.038 2.834 -2" object-model="src:url(assets/models/gun/ablast/gun.json)" sound="src: #laserFire; poolSize: 2000;" rotation="60.07000000000001 0 0"></a-entity>
-      
-    <a-entity id="instruction" position="2 10 -20"
-              text="width: 20; lineHeight: 100; letterSpacing: 5; color: red; value: Objection : Search a gun and pick it.">
-    </a-entity>
+
+    <!-- Floating instructions !-->
+    <a-text id="instruction" color="red" position="-5.753 10 -20" value="Objective: Search a gun and pick it." line-height="100" letter-space="5" width="20">
+      <a-animation attribute="text.opacity" from="1" to="0" repeat="indefinite" direction="alternate"></a-animation>
+    </a-text>
+    
   </a-scene>
 
-  <!-- Browserified source !-->
-  <!-- <script src="core/bundled.js"></script> -->
-
   <script type="text/javascript">
-    // Game status: true means playing.
-    var playingGame = false;
-
     window.addEventListener("load", function(){
+      // Constants of the game
       const SCENE             = document.querySelector("a-scene");
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
-      const TRUCK             = document.querySelector(".truck");
-      const PLAYER            = document.querySelector("a-camera");
+      const TRUCK             = document.querySelector("#truck");
+      const PLAYER            = document.querySelector("#player");
 
+      // Variables of the game
+      var playingGame   = false;
       var pickedGun     = null;
       var targetEnemy   = null;
       var score         = 0;
       var life          = 5;
-
-      // Moving the truck
-      setInterval(function(){
-        TRUCK.setAttribute("rotation", Math.random() + " 0 0");
-        var ennemies = document.querySelectorAll(".enemy");
-      },100);
-        
-      // Spawning zombie function
+      
+      // Spawning zombie every 2 seconds
       setInterval(function(){
         if(!playingGame) return;
-        var ennemies = document.querySelectorAll(".enemy");
-        for(var i = 0; i < ennemies.length; i++) {
-          var enemyPosition = ennemies[i].components.position.data;
+        var enemies = document.querySelectorAll(".enemy");
 
-          (enemyPosition.z >= -2) ? reduceLife() : enemyPosition.z += 1;
-          if(enemyPosition.z >= -2) continue;
-
-          ennemies[i].setAttribute("position", enemyPosition);
-          ennemies[i].components.position.update();
+        // We check the position of the zombies
+        for(var i = 0; i < enemies.length; i++) {
+          if(enemies[i].components.position.data.z < -2) continue;
+          reduceLife(); // If they are near enough, they attack us
         }
 
-        if(ennemies.length === 10) return;
-
-        createNewEnemy();
-      }, 3000)
+        // If there is less than 10 zombies, spawn another one
+        if(enemies.length < 10) createNewEnemy(); 
+      }, 2000)
 
       // Grab the gun
       RIGHT_CONTROLLER.addEventListener('click', function(evt) {
@@ -114,7 +108,7 @@
         pickedGun.setAttribute("position", "0.013 0.005 -0.054");
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
 
-        updateInstruction('Objection : Kill All Zombies');
+        updateInstruction('Objective : Kill All Zombies');
         generateStartPoint();
       });
 
@@ -165,7 +159,7 @@
       }
 
       function createNewEnemy() {
-        var zombie  = document.createElement("a-obj-model");
+        var zombie    = document.createElement("a-obj-model");
         zombie.setAttribute("class","enemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
         zombie.setAttribute("scale","1.6 2 1.6");
@@ -173,6 +167,14 @@
         zombie.setAttribute("mtl","#zombie0-mtl");
         zombie.setAttribute("look-controls","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
+
+        var animation = document.createElement("a-animation");
+        animation.setAttribute("to", "0 2 0");
+        animation.setAttribute("dur", "5000");
+        animation.setAttribute("attribute", "position");
+        animation.setAttribute("repeat", "indefinite");
+
+        zombie.appendChild(animation);
         SCENE.appendChild(zombie);
       }
 
@@ -201,18 +203,6 @@
       }
 
     });
-
-    // Animate opacity.
-    var instruction = document.getElementById('instruction');
-    var obj = {opacity: 0};
-    var tween = new AFRAME.TWEEN.Tween(obj)
-      .to({opacity: 1}, 500)
-      .repeat( Infinity )
-      .yoyo( true )
-      .onUpdate(function () {
-        instruction.setAttribute('text', 'opacity', obj.opacity);
-      })
-      .start();
     </script>
-</body>
+  </body>
 </html>
