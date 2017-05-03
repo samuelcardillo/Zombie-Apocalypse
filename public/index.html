@@ -9,6 +9,12 @@
     <!-- Importing other components !-->
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.0/dist/aframe-extras.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
+
+    <!-- Investigate for an alternative in order to not import these 3 things !-->
+    <script src="assets/scripts/Animation.js"></script>
+    <script src="assets/scripts/AnimationHandler.js"></script>
+    <script src="assets/scripts/KeyFrameAnimation.js"></script>
+    <script src="assets/scripts/collada-animation-mixer.js"></script>
   </head>
   <body>
   <a-scene>
@@ -21,36 +27,33 @@
       <a-asset-item id="pickup-obj" src="assets/models/pickup/pickup_truck.obj"></a-asset-item>
       <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
 
-      <!-- Zombie0 asset !-->
-      <a-asset-item id="zombie0-obj" src="assets/models/zombie/zombie_slow.obj"></a-asset-item>
-      <a-asset-item id="zombie0-mtl" src="assets/models/zombie/zombie_slow.mtl"></a-asset-item>
-        
-      <!-- Zombie1 asset !-->
-      <a-asset-item id="zombie1-obj" src="assets/models/zombie2/zombie.obj"></a-asset-item>
-      <a-asset-item id="zombie1-mtl" src="assets/models/zombie2/zombie.mtl"></a-asset-item>
+      <!-- Zombie assets !-->
+      <a-asset-item id="zombie-running" src="assets/models/zombie/zombie_run.dae"></a-asset-item>
+      <a-asset-item id="zombie-attack"  src="assets/models/zombie/zombie_attack.dae"></a-asset-item>
+      <a-asset-item id="zombie-dying"   src="assets/models/zombie/zombie_death.dae"></a-asset-item>
         
       <!-- Audio asset !-->
-      <audio id="laserFire" src="assets/sounds/Laser-sound.mp3" preload="auto"></audio>
-      <audio id="truckDriving" src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
-      <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3" preload="auto"></audio>
-      <audio id="scratchSound" src="assets/sounds/scrach-full-sound.mp3" preload="auto"></audio>
+      <audio id="laserFire"     src="assets/sounds/Laser-sound.mp3"></audio>
+      <audio id="truckDriving"  src="assets/sounds/truck-sound3.mp3" preload="auto"></audio>
+      <audio id="zombieMoaning" src="assets/sounds/zombie-sound.mp3"></audio>
+      <audio id="scratchSound"  src="assets/sounds/scrach-full-sound.mp3"></audio>
     </a-assets>
 
     <!-- Player, controllers & environment !-->
-    <a-entity id="player" position="-0.5 2 -1.5" sound="src: #scratchSound;" camera look-controls></a-entity>
-    <a-videosphere src="#video" rotation="0 90 0"></a-videosphere>
+    <a-entity id="player" position="0.104 2.965 -1.107" sound="src: #scratchSound;" camera look-controls></a-entity>
+    <!-- <a-videosphere src="#video" rotation="0 90 0"></a-videosphere> -->
     <a-entity 
       id="rightHand"
       raycaster="objects: .pickable, .enemy" 
-      position="-0.5 2 -1.5" 
+      position="0.104 2.965 -1.107"
       hand-controls="right" 
       controller-cursor>
     </a-entity>
     
     <!-- Truck !-->
     <a-obj-model id="truck" sound="src: #truckDriving; autoplay: true; loop: true;" position="0 0 3" src="#pickup-obj" mtl="#pickup-mtl">
-      <a-text color="red" class="score" value="Score: 0" position="0.520 2.159 -5.546"></a-text>
-      <a-text color="red" class="life" value="Life: 5" position="-1.354 2.159 -5.546"></a-text>
+      <a-text color="red" id="score" value="Score: 0" position="0.520 2.159 -5.546"></a-text>
+      <a-text color="red" id="life" value="Life: 5" position="-1.354 2.159 -5.546"></a-text>
 
       <a-animation attribute="rotation" to="0.5 0 0" repeat="indefinite" dur="100" direction="alternate"></a-animation>
     </a-obj-model>
@@ -72,27 +75,24 @@
       const RIGHT_CONTROLLER  = document.querySelector("#rightHand");
       const TRUCK             = document.querySelector("#truck");
       const PLAYER            = document.querySelector("#player");
+      const LIFE_TEXT         = document.querySelector("#life");
+      const SCORE_TEXT        = document.querySelector("#score");
+      const INSTRUCTION_TEXT  = document.querySelector("#instruction");
 
       // Variables of the game
-      var playingGame   = false;
-      var pickedGun     = null;
-      var targetEnemy   = null;
-      var score         = 0;
-      var life          = 5;
+      var playingGame     = false;
+      var pickedGun       = null;
+      var targetEnemy     = null;
+      var score           = 0;
+      var life            = 5;
+      var spawnedEnemies  = 0; // Instead of the querySelectorAll every two seconds
       
       // Spawning zombie every 2 seconds
       setInterval(function(){
         if(!playingGame) return;
-        var enemies = document.querySelectorAll(".enemy");
-
-        // We check the position of the zombies
-        for(var i = 0; i < enemies.length; i++) {
-          if(enemies[i].components.position.data.z < -2) continue;
-          reduceLife(); // If they are near enough, they attack us
-        }
 
         // If there is less than 10 zombies, spawn another one
-        if(enemies.length < 10) createNewEnemy(); 
+        if(spawnedEnemies < 2) createNewEnemy(); 
       }, 2000)
 
       // Grab the gun
@@ -107,19 +107,17 @@
         pickedGun.setAttribute("class", "");
         pickedGun.setAttribute("position", "0.013 0.005 -0.054");
         pickedGun.setAttribute("rotation", "-3.552 59.702 91.616");
-
-        updateInstruction('Objective : Kill All Zombies');
-        generateStartPoint();
+        
+        INSTRUCTION_TEXT.setAttribute("value", 'Objective : Kill All Zombies');
+        createNewEnemy(); // We create one new zombie for the "tutorial"
       });
 
       // Define if the player is targeting a zombie
       RIGHT_CONTROLLER.addEventListener("mouseenter", function(evt) {
         if(evt.detail.intersectedEl === undefined) return;
-        else if(evt.detail.intersectedEl.className === "enemy" ) {
+        
+        if(evt.detail.intersectedEl.className === "enemy" )
           targetEnemy = evt.detail.intersectedEl;
-          playingGame = true;
-          updateInstruction('Objective : Kill All Zombies');
-        }
       })
 
       // Define if the player is no more targeting a zombie
@@ -132,61 +130,66 @@
       // When player shoot, kill the zombie or do nothing;
       RIGHT_CONTROLLER.addEventListener('triggerdown', function(evt) {
         if(pickedGun === null) return; 
-
         pickedGun.components.sound.playSound();
+
         if(targetEnemy === null) return;
         SCENE.removeChild(targetEnemy);
-        score += 10;
-        document.querySelector("a-text").setAttribute("value", "Score: " + score);
         targetEnemy = null;
-      })
 
-      // Starting game
-      function generateStartPoint() {
-        createNewEnemy();
-      }
+        if(!playingGame) playingGame = true; // "tutorial" is over, the game can properly start.
+
+        score += 10;
+        spawnedEnemies--;
+        SCORE_TEXT.setAttribute("value", "Score: " + score);
+      })
 
       // Reduce life of the player
       function reduceLife() {
         if(life === 0) return CallGameOver();
-        var lifeText = document.querySelector(".life");
 
         PLAYER.components.sound.playSound();
 
         life--;
-        lifeText.setAttribute("value", "Life: " + life);
+        LIFE_TEXT.setAttribute("value", "Life: " + life);
         return true;
       }
 
       function createNewEnemy() {
-        var zombie    = document.createElement("a-obj-model");
+        var zombie    = document.createElement("a-entity");
         zombie.setAttribute("class","enemy");
-        zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 10) + 2));
-        zombie.setAttribute("scale","1.6 2 1.6");
-        zombie.setAttribute("src","#zombie0-obj");
-        zombie.setAttribute("mtl","#zombie0-mtl");
-        zombie.setAttribute("look-controls","");
+        zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 20) + 6));
+        zombie.setAttribute("scale","10 10 10");
+        zombie.setAttribute("collada-model","#zombie-running");
+        zombie.setAttribute("collada-animation-mixer","");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
 
+        // Animation need to be investigated <----
         var animation = document.createElement("a-animation");
-        animation.setAttribute("to", "0 2 0");
-        animation.setAttribute("dur", "5000");
+        animation.setAttribute("to", "0 0 -4");
+        animation.setAttribute("from", "0 0 -50");
+        animation.setAttribute("dur", "24000");
         animation.setAttribute("attribute", "position");
-        animation.setAttribute("repeat", "indefinite");
+        animation.addEventListener("animationend", function(evt) {
+          zombie.setAttribute("collada-model", "#zombie-attack");
+          zombie.setAttribute("collada-animation-mixer", "autoplay: true; loop: true;");
+          reduceLife(); // Will need to be in an interval stopped when the zombie is killed
+        })
 
         zombie.appendChild(animation);
         SCENE.appendChild(zombie);
+        spawnedEnemies++;
       }
 
       // Create a game over function.
       function CallGameOver() {
         removeAllEnemies();
         playingGame = false;
-        life = 5;
+        life  = 5;
         score = 0;
-        document.querySelector(".life").setAttribute("value", "Life: " + life);
-        document.querySelector("a-text").setAttribute("value", "Score: " + score);
-        updateInstruction('Are you Giving up? Kill zombie!');
+
+        LIFE_TEXT.setAttribute("value", "Life: " + life);
+        SCORE_TEXT.setAttribute("value", "Score: " + score);
+        INSTRUCTION_TEXT.setAttribute("value", 'Are you giving up? Kill zombie!');
         createNewEnemy();
       }
 
@@ -195,11 +198,7 @@
         for(var i = 0; i < enemies.length; ++i) {
           SCENE.removeChild(enemies[i]);
         }
-      }
-      // Update Text.
-      function updateInstruction(newText) {
-        var instruction = document.getElementById('instruction');
-        instruction.setAttribute('text', 'value', newText);
+        spawnedEnemies = 0;
       }
 
     });
