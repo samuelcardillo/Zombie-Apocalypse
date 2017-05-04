@@ -28,9 +28,7 @@
       <a-asset-item id="pickup-mtl" src="assets/models/pickup/pickup_truck.mtl"></a-asset-item>
 
       <!-- Zombie assets !-->
-      <a-asset-item id="zombie-running" src="assets/models/zombie/zombie_run.dae"></a-asset-item>
-      <a-asset-item id="zombie-attack"  src="assets/models/zombie/zombie_attack.dae"></a-asset-item>
-      <a-asset-item id="zombie-dying"   src="assets/models/zombie/zombie_death.dae"></a-asset-item>
+      <a-asset-item id="zombie" src="assets/models/zombie/zombie.json"></a-asset-item>
         
       <!-- Audio asset !-->
       <audio id="laserFire"     src="assets/sounds/Laser-sound.mp3"></audio>
@@ -158,20 +156,19 @@
         var zombie    = document.createElement("a-entity");
         zombie.setAttribute("class","enemy");
         zombie.setAttribute("position", Math.floor((Math.random() * 5) + 1) + " 0 -" + Math.floor((Math.random() * 20) + 6));
-        zombie.setAttribute("scale","10 10 10");
-        zombie.setAttribute("collada-model","#zombie-running");
-        zombie.setAttribute("collada-animation-mixer","");
+        zombie.setAttribute("scale","0.1 0.1 0.1");
+        zombie.setAttribute("json-model","src: #zombie");
+        zombie.setAttribute("animation-mixer","clip: Run");
         zombie.setAttribute("sound","src: #zombieMoaning; autoplay: true;");
 
         // Animation need to be investigated <----
         var animation = document.createElement("a-animation");
         animation.setAttribute("to", "0 0 -4");
-        animation.setAttribute("from", "0 0 -50");
-        animation.setAttribute("dur", "24000");
+        animation.setAttribute("dur", "400000");
+        animation.setAttribute("repeat", "indefinite");
         animation.setAttribute("attribute", "position");
         animation.addEventListener("animationend", function(evt) {
-          zombie.setAttribute("collada-model", "#zombie-attack");
-          zombie.setAttribute("collada-animation-mixer", "autoplay: true; loop: true;");
+          zombie.setAttribute("animation-mixer", "clip: Attack");
           reduceLife(); // Will need to be in an interval stopped when the zombie is killed
         })
 
