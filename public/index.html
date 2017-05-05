@@ -7,14 +7,8 @@
     <script src="aframe.min.js"></script>
 
     <!-- Importing other components !-->
-    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.0/dist/aframe-extras.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.1/dist/aframe-extras.min.js"></script>
     <script src="assets/scripts/aframe-controller-cursor-component.min.js"></script>
-
-    <!-- Investigate for an alternative in order to not import these 3 things !-->
-    <script src="assets/scripts/Animation.js"></script>
-    <script src="assets/scripts/AnimationHandler.js"></script>
-    <script src="assets/scripts/KeyFrameAnimation.js"></script>
-    <script src="assets/scripts/collada-animation-mixer.js"></script>
   </head>
   <body>
   <a-scene>
@@ -165,11 +159,12 @@
         var animation = document.createElement("a-animation");
         animation.setAttribute("to", "0 0 -4");
         animation.setAttribute("dur", "400000");
-        animation.setAttribute("repeat", "indefinite");
         animation.setAttribute("attribute", "position");
         animation.addEventListener("animationend", function(evt) {
-          zombie.setAttribute("animation-mixer", "clip: Attack");
-          reduceLife(); // Will need to be in an interval stopped when the zombie is killed
+          zombie.setAttribute("animation-mixer", "clip: Attack; loop: pingpong;");
+          zombie.addEventListener("animation-loop", function(){
+            reduceLife();
+          })
         })
 
         zombie.appendChild(animation);
